@@ -48,9 +48,26 @@ def load_data():
 df_mean, df_max, df_std = load_data()
 
 # 3. Barra Lateral
+# 3. Barra Lateral
 st.sidebar.header("Seletor de Propriedade")
-propriedades_opcoes = ['COP', 'mpri', 'Qcond', 'Tsaid Res', 'Qevap', 'W', 'SOMA', 'Tdesc', 'Tsaid Aque', 'Tsaid GC']
-propriedade_selecionada = st.sidebar.radio("Selecione a Propriedade:", propriedades_opcoes)
+
+# Mapeamento: nome exibido -> nome real da coluna
+mapa_propriedades = {
+    'COP': 'COP',
+    'Fluxo de Massa kg/s': 'mpri',
+    'Gas Cooler (W)': 'Qcond',
+    'Saída Água ºC': 'Tsaid Aque',
+    'Evaporador (W)': 'Qevap',
+    'Compressor (W)': 'W',
+    'SOMA': 'SOMA',
+    'Descarga ºC': 'Tdesc',
+    'Saída Glicol ºC': 'Tsaid Res',
+    'Gas Cooler Saída ºC': 'Tsaid GC'
+}
+
+nome_exibido = st.sidebar.radio("Selecione a Propriedade:", list(mapa_propriedades.keys()))
+propriedade_selecionada = mapa_propriedades[nome_exibido]  # nome real da coluna
+
 
 # 4. Layout em Três Colunas
 col1, col2, col3 = st.columns(3)
@@ -95,9 +112,10 @@ with col3:
 st.markdown("---")
 st.subheader("Condições de Teste")
 st.markdown("""
-* **Condição 1:** Pressão absoluta | Calibração calibrada com esta informação.
-* **Condição 2:** Pressão manométrica | Calibração da primeira condição.
-* **Condição 3:** Pressão absoluta | Calibração do artigo do Richard.
-* **Condição 4:** Pressão manométrica | Calibração do artigo.
-* **Condição 5:** Pressão manométrica | Tentativa de recalibração do modelo.
+            Ficou indefinido se a pressão dos testes eram de pressão absoluta ou manométrica fica então a comparação dos casos
+* **Condição 1:** Pressão absoluta | Calibração calibrada com dados de medição considerados pressão absoluta.
+* **Condição 2:** Pressão manométrica | Calibração da primeira condição supondo dados com medição manométrica.
+* **Condição 3:** Pressão absoluta | Calibração do artigo de Richard Samir Hernandez Mesa considerando pressão absoluta.
+* **Condição 4:** Pressão manométrica | Calibração do artigo supondo dados com medição manométrica.
+* **Condição 5:** Pressão manométrica | Tentativa de recalibração do modelo supondo dados com medição manométrica.
 """)
